@@ -1,6 +1,27 @@
 <?php
 require_once __DIR__ . "/../../includes/auth.php";
 require_login();
+
+$departmentId = (int) ($_GET['id'] ?? 0);
+
+if ($departmentId <= 0) {
+    redirect_to('pages/departments/index.php?error=invalid');
+}
+
+$stmt = $conn->prepare("SELECT department_id, department_name, description FROM departments WHERE department_id = ?");
+$stmt->bind_param('i', $departmentId);
+$stmt->execute();
+$department = $stmt->get_result()->fetch_assoc();
+
+if (!$department) {
+    redirect_to('pages/departments/index.php?error=not_found');
+}
+
+$errors = [
+    'invalid' => 'Department name is required.',
+    'duplicate' => 'A department with this name already exists.',
+    'save_failed' => 'Department could not be updated.',
+];
 ?>
 
 <!DOCTYPE html>
@@ -35,29 +56,24 @@ require_login();
 
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form action="index.php" method="POST">
+                            <?php if (isset($_GET['error'], $errors[$_GET['error']])): ?>
+                                <div class="alert alert-danger">
+                                    <?= htmlspecialchars($errors[$_GET['error']]) ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <form action="../../ajax/department.php" method="POST">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="department_id" value="<?= htmlspecialchars((string) $department['department_id']) ?>">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Department Name</label>
-                                        <input type="text" class="form-control" value="Engineering" required>
+                                        <input type="text" name="department_name" class="form-control" value="<?= htmlspecialchars($department['department_name']) ?>" required>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">Manager</label>
-                                        <input type="text" class="form-control" value="David Miller" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Employee Count</label>
-                                        <input type="number" class="form-control" value="82" min="0">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-select">
-                                            <option selected>Active</option>
-                                            <option>Inactive</option>
-                                        </select>
+                                    <div class="col-12">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="description" class="form-control" rows="3" placeholder="Short description"><?= htmlspecialchars($department['description'] ?? '') ?></textarea>
                                     </div>
                                 </div>
 

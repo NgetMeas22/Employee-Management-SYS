@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . "/../../includes/auth.php";
 require_login();
+
+$errors = [
+    'missing_name' => 'Department name is required.',
+    'duplicate' => 'A department with this name already exists.',
+    'save_failed' => 'Department could not be saved.',
+];
 ?>
 
 <!DOCTYPE html>
@@ -35,29 +41,18 @@ require_login();
 
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form action="index.php" method="POST">
+                            <?php if (isset($_GET['error'], $errors[$_GET['error']])): ?>
+                                <div class="alert alert-danger">
+                                    <?= htmlspecialchars($errors[$_GET['error']]) ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <form action="../../ajax/department.php" method="POST">
+                                <input type="hidden" name="action" value="create">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Department Name</label>
-                                        <input type="text" name="name" class="form-control" placeholder="Department name" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Manager</label>
-                                        <input type="text" name="manager" class="form-control" placeholder="Manager name" required>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Employee Count</label>
-                                        <input type="number" name="employees" class="form-control" placeholder="0" min="0">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Status</label>
-                                        <select name="status" class="form-select">
-                                            <option>Active</option>
-                                            <option>Inactive</option>
-                                        </select>
+                                        <input type="text" name="department_name" class="form-control" placeholder="Department name" required>
                                     </div>
 
                                     <div class="col-12">
