@@ -17,9 +17,11 @@
         <div class="d-flex align-items-center gap-3">
             <i class="bi bi-bell fs-5"></i>
             <i class="bi bi-envelope fs-5"></i>
-            <img src="../../assets/images/profile.jpg" class="rounded-circle" alt="Admin" width="40" height="40" style="object-fit: cover;">
+            <a href="<?= app_base_url() ?>pages/profile/index.php">
+                <img src="<?= app_base_url() ?>assets/images/profile.jpg" class="rounded-circle" alt="Admin" width="40" height="40" style="object-fit: cover;">
+            </a>
             <span class="fw-semibold"><?= htmlspecialchars(current_user_name()) ?></span>
-            <a href="../../logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
+            <a href="<?= app_base_url() ?>logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
         </div>
     </div>
 </nav>

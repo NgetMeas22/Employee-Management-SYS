@@ -11,9 +11,9 @@ require_login();
     <title>Add New Employee</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css?v=appearance-theme">
 </head>
-<body>
+<body <?= app_body_attributes() ?>>
     <div class="d-flex min-vh-100">
         <?php require_once __DIR__ . "/../../includes/sidebar.php"; ?>
 

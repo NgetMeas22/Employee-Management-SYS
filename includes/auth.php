@@ -35,6 +35,39 @@ function current_user_name(): string
     return $_SESSION['username'] ?? $_COOKIE['username'] ?? 'Admin';
 }
 
+function current_theme(): string
+{
+    $theme = $_SESSION['theme'] ?? $_COOKIE['theme'] ?? 'light';
+
+    return in_array($theme, ['light', 'dark', 'system'], true) ? $theme : 'light';
+}
+
+function current_brand_color(): string
+{
+    $brandColor = $_SESSION['brand_color'] ?? $_COOKIE['brand_color'] ?? 'blue';
+
+    return in_array($brandColor, ['blue', 'green', 'orange', 'charcoal'], true) ? $brandColor : 'blue';
+}
+
+function current_brand_color_hex(): string
+{
+    return [
+        'blue' => '#0d6efd',
+        'green' => '#07864f',
+        'orange' => '#a43e06',
+        'charcoal' => '#4d4a57',
+    ][current_brand_color()];
+}
+
+function app_body_attributes(): string
+{
+    $theme = htmlspecialchars(current_theme(), ENT_QUOTES, 'UTF-8');
+    $brandColor = htmlspecialchars(current_brand_color(), ENT_QUOTES, 'UTF-8');
+    $brandHex = htmlspecialchars(current_brand_color_hex(), ENT_QUOTES, 'UTF-8');
+
+    return 'class="app-theme-' . $theme . ' app-brand-' . $brandColor . '" style="--app-primary: ' . $brandHex . ';"';
+}
+
 function require_login(): void
 {
     if (!is_logged_in()) {

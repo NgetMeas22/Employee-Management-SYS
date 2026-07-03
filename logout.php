@@ -10,8 +10,9 @@ require_login();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Management System | Logout</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=appearance-theme">
 </head>
-<body class="bg-light">
+<body <?= app_body_attributes() ?>>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-5">
@@ -30,7 +31,7 @@ require_login();
                             <input type="hidden" name="logout" value="1">
                             <button type="submit" class="btn btn-danger w-100">Logout</button>
                         </form>
-                        <a href="pages/dashboard/index.php" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+                        <a href="pages/dashboard/index.php" class="btn btn-outline-primary  w-100 mt-2">Cancel</a>
                     </div>
                 </div>
             </div>

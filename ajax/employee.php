@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../includes/auth.php";
+require_once __DIR__ . "/../includes/auth.php";
 require_login();
 
 // Mock data representing the exact table items in your image
@@ -11,7 +11,6 @@ $employees = [
     ['name' => 'James Peterson', 'email' => 'j.peter@workforce.pro', 'role' => 'Product Marketer', 'dept' => 'Marketing', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=59']
 ];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +19,7 @@ $employees = [
     <title>Employees Directory</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=appearance-theme">
     
     <style>
         body {
@@ -98,12 +98,12 @@ $employees = [
         }
     </style>
 </head>
-<body>
+<body <?= app_body_attributes() ?>>
     <div class="d-flex min-vh-100">
-        <?php require_once __DIR__ . "/../../includes/sidebar.php"; ?>
+        <?php require_once __DIR__ . "/../includes/sidebar.php"; ?>
 
         <div class="flex-grow-1 d-flex flex-column">
-            <?php require_once __DIR__ . "/../../includes/navbar.php"; ?>
+            <?php require_once __DIR__ . "/../includes/navbar.php"; ?>
 
             <main class="flex-grow-1 p-4">
                 <div class="container-fluid">

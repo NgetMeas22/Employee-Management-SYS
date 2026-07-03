@@ -27,6 +27,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Employee Management System | Login</title>
 
     <!-- Bootstrap -->
@@ -44,7 +45,6 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
         *{
             font-family: 'Poppins', sans-serif;
         }
-
         body{
             min-height:100vh;
             display:flex;
@@ -164,8 +164,9 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
     </style>
 
+    <link rel="stylesheet" href="assets/css/style.css?v=appearance-theme">
 </head>
-<body>
+<body <?= app_body_attributes() ?>>
 
 <div class="container">
 
@@ -264,7 +265,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
                     <p class="text-center text-muted small mt-4 mb-0">
                         Don't have an account?
-                        <a href="register.php" class="fw-semibold">Register</a>
+                        <a href="register.php" class="fw-semibold">Register Here</a>
                     </p>
 
                 </div>

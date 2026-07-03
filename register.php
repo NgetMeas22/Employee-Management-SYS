@@ -15,7 +15,6 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
     $notice = $messages[$_GET['error']];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,12 +96,14 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/style.css?v=appearance-theme">
 </head>
-<body>
+<body <?= app_body_attributes() ?>>
     <div class="container">
         <div class="card register-card">
             <div class="row g-0">
                 <div class="col-md-5 d-none d-md-flex brand-panel flex-column justify-content-center">
+                    
                     <h2 class="fw-bold">Create Your Account</h2>
                     <p class="mt-3 mb-0">
                         Register an admin user, then login with the same email and password.
@@ -162,7 +163,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
                     <p class="text-center text-muted small mt-4 mb-0">
                         Already have an account?
-                        <a href="login.php" class="fw-semibold">Login</a>
+                        <a href="login.php" class="fw-semibold"> Login Here</a>
                     </p>
                 </div>
             </div>
