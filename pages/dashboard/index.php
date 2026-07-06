@@ -2,16 +2,36 @@
 require_once __DIR__ . "/../../includes/auth.php";
 require_login();
 
-// Mock data simulating database results for the table
-$recent_hires = [
-    ['name' => 'Alex Rivera', 'role' => 'Senior Engineer', 'dept' => 'Engineering', 'date' => 'June 12, 2023', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=32'],
-    ['name' => 'Jordan Smith', 'role' => 'Lead Designer', 'dept' => 'Marketing', 'date' => 'June 08, 2023', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=12'],
-    ['name' => 'Sarah Chen', 'role' => 'Operations Manager', 'dept' => 'Operations', 'date' => 'June 05, 2023', 'status' => 'Onboarding', 'avatar' => 'https://i.pravatar.cc/150?img=47'],
-    ['name' => 'Michael Brown', 'role' => 'Sales Associate', 'dept' => 'Marketing', 'date' => 'May 28, 2023', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=53'],
-    ['name' => 'Emily Davis', 'role' => 'HR Specialist', 'dept' => 'HR & Admin', 'date' => 'May 22, 2023', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=31']
-];
-?>
+$totalEmployees = 0;
+$totalDepartments = 0;
+$activeEmployees = 0;
+$newThisMonth = 0;
 
+$result = $conn->query("SELECT COUNT(*) AS total FROM employees");
+if ($result) {
+    $data = $result->fetch_assoc();
+    $totalEmployees = (int) ($data['total'] ?? 0);
+}
+
+$result = $conn->query("SELECT COUNT(*) AS total FROM departments");
+if ($result) {
+    $data = $result->fetch_assoc();
+    $totalDepartments = (int) ($data['total'] ?? 0);
+}
+
+$result = $conn->query("SELECT COUNT(*) AS total FROM employees WHERE status = 'Active'");
+if ($result) {
+    $data = $result->fetch_assoc();
+    $activeEmployees = (int) ($data['total'] ?? 0);
+}
+
+$result = $conn->query("SELECT COUNT(*) AS total FROM employees WHERE MONTH(hire_date) = MONTH(CURDATE()) AND YEAR(hire_date) = YEAR(CURDATE())");
+if ($result) {
+    $data = $result->fetch_assoc();
+    $newThisMonth = (int) ($data['total'] ?? 0);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +115,7 @@ $recent_hires = [
                                         </span>
                                     </div>
                                     <h6 class="text-muted text-uppercase small fw-bold tracking-wider mb-1">Total Employees</h6>
-                                    <h2 class="fw-bold mb-0">15</h2>
+                                    <h2 class="fw-bold mb-0"><?= number_format($totalEmployees) ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +128,7 @@ $recent_hires = [
                                         <span class="badge bg-light text-secondary border d-flex align-items-center gap-1">Steady</span>
                                     </div>
                                     <h6 class="text-muted text-uppercase small fw-bold tracking-wider mb-1">Total Departments</h6>
-                                    <h2 class="fw-bold mb-0">12</h2>
+                                    <h2 class="fw-bold mb-0"><?= number_format($totalDepartments) ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -123,11 +143,11 @@ $recent_hires = [
                                         </span>
                                     </div>
                                     <h6 class="text-muted text-uppercase small fw-bold tracking-wider mb-1">Active Employees</h6>
-                                    <h2 class="fw-bold mb-0">5</h2>
+                                    <h2 class="fw-bold mb-0"><?= number_format($activeEmployees) ?></h2>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="col-xl-3 col-md-6">
                             <div class="card h-100 shadow-sm border-0">
                                 <div class="card-body">
@@ -136,7 +156,7 @@ $recent_hires = [
                                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle">New</span>
                                     </div>
                                     <h6 class="text-muted text-uppercase small fw-bold tracking-wider mb-1">New This Month</h6>
-                                    <h2 class="fw-bold mb-0">12</h2>
+                                    <h2 class="fw-bold mb-0"><?= number_format($newThisMonth) ?></h2>
                                 </div>
                             </div>
                         </div>
@@ -194,63 +214,7 @@ $recent_hires = [
                             </div>
                         </div>
                     </div>
-
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="fw-bold mb-0">Recent Hires</h5>
-                                <small class="text-muted">Last 5 employees onboarded</small>
-                            </div>
-                            <a href="../employees/index.php" class="btn btn-link btn-sm text-decoration-none fw-semibold">View All</a>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="ps-4">Employee</th>
-                                        <th>Department</th>
-                                        <th>Joining Date</th>
-                                        <th>Status</th>
-                                        <th class="text-end pe-4">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($recent_hires as $hire): ?>
-                                    <tr>
-                                        <td class="ps-4">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <img src="<?= $hire['avatar'] ?>" class="avatar" alt="Avatar">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold text-dark"><?= htmlspecialchars($hire['name']) ?></h6>
-                                                    <small class="text-muted"><?= htmlspecialchars($hire['role']) ?></small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="text-secondary"><?= htmlspecialchars($hire['dept']) ?></span>
-                                        </td>
-                                        <td>
-                                            <span class="text-secondary"><?= htmlspecialchars($hire['date']) ?></span>
-                                        </td>
-                                        <td>
-                                            <?php if ($hire['status'] === 'Active'): ?>
-                                                <span class="badge bg-success-subtle text-success px-2.5 py-1.5 border border-success-subtle">Active</span>
-                                            <?php else: ?>
-                                                <span class="badge bg-primary-subtle text-primary px-2.5 py-1.5 border border-primary-subtle">Onboarding</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-end pe-4">
-                                            <button class="btn btn-link text-secondary p-0" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
+         
                 </div>
             </main>
         </div>

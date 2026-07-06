@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . "/../../includes/auth.php";
 require_login();
+
+$id = (int) ($_GET['id'] ?? 0);
+$employee = null;
+if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM employees WHERE employee_id = ?");
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $employee = $stmt->get_result()->fetch_assoc();
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,31 +44,72 @@ require_login();
 
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form action="index.php" method="POST">
+                            <?php $departments = $conn->query("SELECT department_id, department_name FROM departments ORDER BY department_name ASC"); ?>
+                            <form action="../../ajax/update_employee.php" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="employee_id" value="<?= (int) ($employee['employee_id'] ?? 0) ?>">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" value="Sarah Jenkins" required>
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" name="first_name" class="form-control" value="<?= htmlspecialchars($employee['first_name'] ?? '') ?>" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" name="last_name" class="form-control" value="<?= htmlspecialchars($employee['last_name'] ?? '') ?>" required>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="sarah.j@workforce.pro" required>
+                                        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($employee['email'] ?? '') ?>" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($employee['phone'] ?? '') ?>">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Position</label>
-                                        <input type="text" class="form-control" value="Senior UX Designer" required>
+                                        <input type="text" name="position" class="form-control" value="<?= htmlspecialchars($employee['position'] ?? '') ?>" required>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Department</label>
-                                        <select class="form-select">
-                                            <option selected>Design</option>
-                                            <option>Engineering</option>
-                                            <option>Human Resources</option>
-                                            <option>Marketing</option>
+                                        <select name="department_id" class="form-select" required>
+                                            <?php if ($departments && $departments->num_rows > 0): ?>
+                                                <option value="" disabled>Select department</option>
+                                                <?php while ($d = $departments->fetch_assoc()): ?>
+                                                    <option value="<?= (int) $d['department_id'] ?>" <?= (int) $d['department_id'] === (int) ($employee['department_id'] ?? 0) ? 'selected' : '' ?>><?= htmlspecialchars($d['department_name']) ?></option>
+                                                <?php endwhile; ?>
+                                            <?php endif; ?>
                                         </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Status</label>
+                                        <select name="status" class="form-select" required>
+                                            <option value="Active" <?= ($employee['status'] ?? '') === 'Active' ? 'selected' : '' ?>>Active</option>
+                                            <option value="On Leave" <?= ($employee['status'] ?? '') === 'On Leave' ? 'selected' : '' ?>>On Leave</option>
+                                            <option value="Inactive" <?= ($employee['status'] ?? '') === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Address</label>
+                                        <textarea name="address" class="form-control" rows="3"><?= htmlspecialchars($employee['address'] ?? '') ?></textarea>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Photo</label>
+                                        <input type="file" name="avatar" accept="image/*" class="form-control">
+                                        <?php if (!empty($employee['photo'])): ?>
+                                            <small class="d-block mt-1">Current: <?= htmlspecialchars($employee['photo']) ?></small>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Hire Date</label>
+                                        <input type="date" name="hire_date" class="form-control" value="<?= htmlspecialchars($employee['hire_date'] ?? '') ?>">
                                     </div>
                                 </div>
 

@@ -120,9 +120,10 @@ require_login();
                         </a>
                     </div>
 
+                    <?php $departments_rs = $conn->query("SELECT department_id, department_name FROM departments ORDER BY department_name ASC"); ?>
                     <form action="process-employee.php" method="POST" enctype="multipart/form-data" class="form-container shadow-sm">
                         <div class="p-4 p-md-5">
-                            
+
                             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-4 mb-5">
                                 <div class="avatar-upload-wrapper">
                                     <label for="avatar-input" class="avatar-preview">
@@ -151,16 +152,16 @@ require_login();
 
                                 <div class="col-md-6">
                                     <label class="form-label">Gender</label>
-                                    <select class="form-select" name="gender">
-                                        <option selected disabled>Select gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
+                                    <select class="form-select" name="gender" required>
+                                        <option value="" disabled selected>Select gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control text-muted" name="dob">
+                                    <input type="date" class="form-control" name="dob">
                                 </div>
 
                                 <div class="col-md-6">
@@ -176,25 +177,37 @@ require_login();
                             <hr class="text-muted my-4 opacity-25">
 
                             <h5 class="fw-bold text-dark mb-4">Employment Details</h5>
-                            
+
                             <div class="row g-4 mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label">Department</label>
-                                    <select class="form-select" name="department">
-                                        <option selected disabled>Select department</option>
-                                        <option value="design">Design</option>
-                                        <option value="engineering">Engineering</option>
-                                        <option value="management">Management</option>
-                                        <option value="hr">Human Resources</option>
-                                        <option value="marketing">Marketing</option>
+                                    <select class="form-select" name="department_id" required>
+                                        <?php if ($departments_rs && $departments_rs->num_rows > 0): ?>
+                                            <option value="" disabled selected>Select department</option>
+                                            <?php while ($d = $departments_rs->fetch_assoc()): ?>
+                                                <option value="<?= (int) $d['department_id'] ?>"><?= htmlspecialchars($d['department_name']) ?></option>
+                                            <?php endwhile; ?>
+                                        <?php else: ?>
+                                            <option value="" disabled>No departments available</option>
+                                        <?php endif; ?>
                                     </select>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Position</label>
+                                    <input type="text" class="form-control" name="position" placeholder="Job position" required>
+                                </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Annual Salary (USD)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-end-0 text-muted" style="font-size: 0.875rem;">$</span>
-                                        <input type="text" class="form-control border-start-0 ps-1" name="salary" placeholder="85,000">
+                                        <input type="text" class="form-control border-start-0 ps-1" name="salary" placeholder="85000">
                                     </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Hire Date</label>
+                                    <input type="date" class="form-control" name="hire_date">
                                 </div>
 
                                 <div class="col-12">
@@ -221,7 +234,7 @@ require_login();
                         </div>
 
                         <div class="form-footer d-flex flex-column flex-sm-row justify-content-end align-items-center gap-3">
-                            <button type="button" class="btn btn-light border px-4 py-2 small fw-medium text-secondary bg-white w-100 w-sm-auto">Cancel</button>
+                            <button type="button" class="btn btn-light border px-4 py-2 small fw-medium text-secondary bg-white w-100 w-sm-auto" onclick="window.history.back()">Cancel</button>
                             <button type="submit" class="btn btn-primary px-4 py-2 small fw-medium d-inline-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto">
                                 <i class="bi bi-hdd-fill"></i> Save Employee
                             </button>

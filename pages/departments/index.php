@@ -3,6 +3,7 @@ require_once __DIR__ . "/../../includes/auth.php";
 require_login();
 
 $departments = [];
+
 $result = $conn->query(
     "SELECT d.department_id, d.department_name, d.description, COUNT(e.employee_id) AS employees
      FROM departments d

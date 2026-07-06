@@ -3,17 +3,26 @@
     require_login();
     
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $id = intval($_POST['id']);
-    $image = $_POST['image'];
+    $id = intval($_POST['id'] ?? 0);
+    $image = $_POST['image'] ?? '';
 
-    $path = $image;
+    if ($id > 0) {
+        // remove image file if exists and path is within uploads
+        if (!empty($image) && strpos($image, 'uploads/') === 0) {
+            $path = __DIR__ . '/../../' . $image;
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
 
-    if (file_exists($path)) {
-        unlink($path);
+        $stmt = $conn->prepare("DELETE FROM employees WHERE employee_id = ?");
+        $stmt->bind_param('i', $id);
+        if ($stmt->execute()) {
+            redirect_to('pages/employees/index.php?status=deleted');
+        }
     }
-    $conn->query("DELETE FROM products WHERE p_id = $id");
 
-        echo "Deleted Successfully";
+    redirect_to('pages/employees/index.php?error=delete_failed');
 }
 
 ?>

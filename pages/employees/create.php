@@ -35,11 +35,25 @@ require_login();
 
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form action="index.php" method="POST">
+                            <?php
+                            $departments = $conn->query("SELECT department_id, department_name FROM departments ORDER BY department_name ASC");
+                            $error = $_GET['error'] ?? '';
+                            $statusMessage = $_GET['status'] ?? '';
+                            ?>
+                            <?php if ($error): ?>
+                                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                            <?php elseif ($statusMessage === 'created'): ?>
+                                <div class="alert alert-success">Employee successfully created.</div>
+                            <?php endif; ?>
+                            <form action="<?= app_base_url() ?>ajax/process-employee.php" method="POST" enctype="multipart/form-data">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Full Name</label>
-                                        <input type="text" name="name" class="form-control" placeholder="Employee name" required>
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" name="first_name" class="form-control" placeholder="First name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
                                     </div>
 
                                     <div class="col-md-6">
@@ -49,7 +63,29 @@ require_login();
 
                                     <div class="col-md-6">
                                         <label class="form-label">Phone</label>
-                                        <input type="text" name="phone" class="form-control" placeholder="Phone number">
+                                        <input type="text" name="phone" class="form-control" placeholder="Phone number" required>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Gender</label>
+                                        <select name="gender" class="form-select" required>
+                                            <option value="" disabled selected>Select gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Date of Birth</label>
+                                        <input type="date" name="dob" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Salary</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0 text-muted" style="font-size: 0.875rem;">$</span>
+                                            <input type="number" step="0.01" min="0" name="salary" class="form-control border-start-0 ps-1" placeholder="85000" required>
+                                        </div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -59,30 +95,43 @@ require_login();
 
                                     <div class="col-md-6">
                                         <label class="form-label">Department</label>
-                                        <select name="department" class="form-select" required>
-                                            <option value="">Choose department</option>
-                                            <option>Engineering</option>
-                                            <option>Human Resources</option>
-                                            <option>Marketing</option>
-                                            <option>Operations</option>
-                                            <option>Finance</option>
+                                        <select name="department_id" class="form-select" required>
+                                            <?php if ($departments && $departments->num_rows > 0): ?>
+                                                <option value="" disabled selected>Choose department</option>
+                                                <?php while ($d = $departments->fetch_assoc()): ?>
+                                                    <option value="<?= (int) $d['department_id'] ?>"><?= htmlspecialchars($d['department_name']) ?></option>
+                                                <?php endwhile; ?>
+                                            <?php else: ?>
+                                                <option value="" disabled>No departments</option>
+                                            <?php endif; ?>
                                         </select>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Status</label>
                                         <select name="status" class="form-select" required>
-                                            <option>Active</option>
-                                            <option>On Leave</option>
-                                            <option>Inactive</option>
+                                            <option value="Active">Active</option>
+                                            <option value="On Leave">On Leave</option>
+                                            <option value="Inactive">Inactive</option>
+                                            <option value="Resigned">Resigned</option>
                                         </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Hire Date</label>
+                                        <input type="date" name="hire_date" class="form-control" required>
                                     </div>
 
                                     <div class="col-12">
                                         <label class="form-label">Address</label>
                                         <textarea name="address" class="form-control" rows="3" placeholder="Employee address"></textarea>
                                     </div>
-                                </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Photo</label>
+                                        <input type="file" name="avatar" accept="image/*" class="form-control">
+                                        <small class="text-muted">Accepted: jpg, png, gif, webp. Recommended size 400×400px.</small>
+                                    </div>
 
                                 <div class="d-flex justify-content-end gap-2 mt-4">
                                     <a href="index.php" class="btn btn-outline-secondary">Cancel</a>

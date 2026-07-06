@@ -2,14 +2,20 @@
 require_once __DIR__ . "/../../includes/auth.php";
 require_login();
 
-$employees = [
-    ['name' => 'Sarah Jenkins', 'email' => 'sarah.j@workforce.pro', 'position' => 'Senior UX Designer', 'department' => 'Design', 'status' => 'Active'],
-    ['name' => 'David Miller', 'email' => 'd.miller@workforce.pro', 'position' => 'Lead Developer', 'department' => 'Engineering', 'status' => 'On Leave'],
-    ['name' => 'Robert Wilson', 'email' => 'r.wilson@workforce.pro', 'position' => 'Director of Ops', 'department' => 'Management', 'status' => 'Active'],
-    ['name' => 'Emily Thompson', 'email' => 'e.thompson@workforce.pro', 'position' => 'HR Manager', 'department' => 'Human Resources', 'status' => 'Active'],
-];
-?>
+// Fetch real employees from DB
+$employees = [];
+$sql = "SELECT e.employee_id, e.first_name, e.last_name, e.position, COALESCE(d.department_name, '') AS department, e.status, e.email, e.photo
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        ORDER BY e.employee_id DESC";
 
+$res = $conn->query($sql);
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $employees[] = $row;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +56,7 @@ $employees = [
                                             <th>Position</th>
                                             <th>Department</th>
                                             <th>Status</th>
+                                            <th>Profile</th>
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
@@ -57,21 +64,30 @@ $employees = [
                                         <?php foreach ($employees as $employee): ?>
                                             <tr>
                                                 <td>
-                                                    <div class="fw-semibold"><?= htmlspecialchars($employee['name']) ?></div>
-                                                    <small class="text-muted"><?= htmlspecialchars($employee['email']) ?></small>
+                                                    <div class="fw-semibold"><?= htmlspecialchars(($employee['first_name'] ?? '') . ' ' . ($employee['last_name'] ?? '')) ?></div>
+                                                    <small class="text-muted"><?= htmlspecialchars($employee['email'] ?? '') ?></small>
                                                 </td>
-                                                <td><?= htmlspecialchars($employee['position']) ?></td>
-                                                <td><?= htmlspecialchars($employee['department']) ?></td>
+                                                <td><?= htmlspecialchars($employee['position'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($employee['department'] ?? '') ?></td>
                                                 <td>
-                                                    <span class="badge <?= $employee['status'] === 'Active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' ?>">
-                                                        <?= htmlspecialchars($employee['status']) ?>
+                                                    <span class="badge <?= ($employee['status'] ?? '') === 'Active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' ?>">
+                                                        <?= htmlspecialchars($employee['status'] ?? '') ?>
                                                     </span>
                                                 </td>
+                                                <td class="text-center">
+                                                    <?php $imagePath = !empty($employee['photo']) ? app_base_url() . htmlspecialchars($employee['photo']) : app_base_url() . 'assets/images/profile.jpg'; ?>
+                                                    <img src="<?= $imagePath ?>" alt="Employee photo" class=" border-dark-subtle border-2 border rounded-3" width="75" height="75" style="object-fit: cover;">
+                                                </td>
                                                 <td class="text-end">
-                                                    <a href="edit.php" class="btn btn-sm btn-outline-primary">
+                                                    <a href="edit.php?id=<?= (int) $employee['employee_id'] ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="bi bi-pencil-square"></i>
                                                         Edit
                                                     </a>
+                                                    <form action="delete.php" method="POST" class="d-inline-block ms-2" onsubmit="return confirm('Delete this employee?');">
+                                                        <input type="hidden" name="id" value="<?= (int) $employee['employee_id'] ?>">
+                                                        <input type="hidden" name="image" value="<?= htmlspecialchars($employee['photo'] ?? '') ?>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -80,6 +96,7 @@ $employees = [
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </main>
         </div>

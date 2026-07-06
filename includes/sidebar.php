@@ -18,8 +18,8 @@ function sidebar_active(string $section): string
         </div>
 
         <div>
-            <h5 class="m-0 fw-bold text-dark">Meas SYS</h5>
-            <small class="text-muted">Enterprise HR</small>
+            <h4 class="m-0 fw-bold text-dark">GenZ SYS</h4>
+            <small class="text-muted">NG-Meas</small>
         </div>
     </a>
 

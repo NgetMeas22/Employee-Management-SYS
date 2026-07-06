@@ -4,38 +4,118 @@ require_login();
 
 $message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $displayName = trim($_POST['display_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $notifications = isset($_POST['notifications']) ? '1' : '0';
-    $theme = $_POST['theme'] ?? ($_SESSION['theme'] ?? 'light');
-    $brandColor = $_POST['brand_color'] ?? ($_SESSION['brand_color'] ?? 'blue');
-    $currentPassword = $_POST['current_password'] ?? '';
-    $newPassword = $_POST['new_password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
+// Get current user id and load DB values where available
+$userId = $_SESSION['user_id'] ?? $_COOKIE['user_id'] ?? null;
+$displayNameValue = current_user_name();
+$emailValue = '';
+$notificationsChecked = '';
+$selectedTheme = current_theme();
+$selectedBrandColor = current_brand_color();
+$storedPasswordHash = '';
 
-    if (in_array($theme, ['light', 'dark', 'system'], true)) {
-        $_SESSION['theme'] = $theme;
-    }
+if ($userId) {
+    $res = $conn->query("SELECT * FROM user_s WHERE id='" . $conn->real_escape_string($userId) . "' LIMIT 1");
+    if ($res && $res->num_rows > 0) {
+        $row = $res->fetch_assoc();
+        $displayNameValue = $row['username'] ?? $displayNameValue;
+        $emailValue = $row['email'] ?? $emailValue;
+        $storedPasswordHash = $row['pwd'] ?? '';
 
-    if (in_array($brandColor, ['blue', 'green', 'orange', 'charcoal'], true)) {
-        $_SESSION['brand_color'] = $brandColor;
-    }
-
-    if ($newPassword !== '' && $newPassword !== $confirmPassword) {
-        $message = 'New password and confirmation do not match.';
-    } elseif ($newPassword !== '' && $currentPassword === '') {
-        $message = 'Please enter your current password.';
-    } else {
-        $message = 'Settings updated successfully.';
+        // optional columns
+        if (isset($row['notifications'])) { $notificationsChecked = $row['notifications'] == '1' ? 'checked' : ''; }
+        if (isset($row['theme'])) { $selectedTheme = $row['theme']; }
+        if (isset($row['brand_color'])) { $selectedBrandColor = $row['brand_color']; }
     }
 }
 
-$displayNameValue = $_POST['display_name'] ?? current_user_name();
-$emailValue = $_POST['email'] ?? 'admin@example.com';
-$notificationsChecked = isset($_POST['notifications']) ? 'checked' : '';
-$selectedTheme = current_theme();
-$selectedBrandColor = current_brand_color();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Preferences save
+    if (isset($_POST['save_preferences'])) {
+        $displayName = trim($_POST['display_name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $notifications = isset($_POST['notifications']) ? '1' : '0';
+        $theme = $_POST['theme'] ?? ($selectedTheme ?: 'light');
+        $brandColor = $_POST['brand_color'] ?? ($selectedBrandColor ?: 'blue');
+
+        // basic validation
+        if ($displayName === '') {
+            $message = 'Display name cannot be empty.';
+        } elseif ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $message = 'Please provide a valid email.';
+        } else {
+            // build update for user_s if user exists
+            if ($userId) {
+                $updates = [];
+                $updates[] = "username='" . $conn->real_escape_string($displayName) . "'";
+                $updates[] = "email='" . $conn->real_escape_string($email) . "'";
+
+                // check optional columns
+                $cols = $conn->query("SHOW COLUMNS FROM user_s LIKE 'notifications'");
+                if ($cols && $cols->num_rows > 0) { $updates[] = "notifications='" . $conn->real_escape_string($notifications) . "'"; }
+
+                $cols = $conn->query("SHOW COLUMNS FROM user_s LIKE 'theme'");
+                if ($cols && $cols->num_rows > 0) { $updates[] = "theme='" . $conn->real_escape_string($theme) . "'"; }
+
+                $cols = $conn->query("SHOW COLUMNS FROM user_s LIKE 'brand_color'");
+                if ($cols && $cols->num_rows > 0) { $updates[] = "brand_color='" . $conn->real_escape_string($brandColor) . "'"; }
+
+                $sql = "UPDATE user_s SET " . implode(', ', $updates) . " WHERE id='" . $conn->real_escape_string($userId) . "'";
+                if ($conn->query($sql)) {
+                    $message = 'Preferences saved.';
+                    $_SESSION['username'] = $displayName;
+                    set_login_cookie('username', $displayName);
+                } else {
+                    $message = 'Failed to save preferences.';
+                }
+            } else {
+                $message = 'Unable to identify user.';
+            }
+
+            // apply theme and brand to session regardless
+            if (in_array($theme, ['light','dark','system'], true)) { $_SESSION['theme'] = $theme; setcookie('theme',$theme,time()+3600,'/'); }
+            if (in_array($brandColor, ['blue','green','orange','charcoal'], true)) { $_SESSION['brand_color'] = $brandColor; setcookie('brand_color',$brandColor,time()+3600,'/'); }
+        }
+
+        // update local values for form
+        $displayNameValue = $_POST['display_name'] ?? $displayNameValue;
+        $emailValue = $_POST['email'] ?? $emailValue;
+        $notificationsChecked = isset($_POST['notifications']) ? 'checked' : $notificationsChecked;
+        $selectedTheme = $_POST['theme'] ?? $selectedTheme;
+        $selectedBrandColor = $_POST['brand_color'] ?? $selectedBrandColor;
+    }
+
+    // Password update
+    if (isset($_POST['update_password'])) {
+        $currentPassword = $_POST['current_password'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if ($newPassword === '' || $confirmPassword === '') {
+            $message = 'Please enter the new password and confirmation.';
+        } elseif ($newPassword !== $confirmPassword) {
+            $message = 'New password and confirmation do not match.';
+        } elseif (!$userId) {
+            $message = 'Unable to identify user.';
+        } else {
+            // verify current password
+            $res = $conn->query("SELECT pwd FROM user_s WHERE id='" . $conn->real_escape_string($userId) . "' LIMIT 1");
+            $hash = '';
+            if ($res && $res->num_rows > 0) { $hash = $res->fetch_assoc()['pwd'] ?? ''; }
+
+            if ($hash === '' || !password_verify($currentPassword, $hash)) {
+                $message = 'Current password is incorrect.';
+            } else {
+                $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                $sql = "UPDATE user_s SET pwd='" . $conn->real_escape_string($newHash) . "' WHERE id='" . $conn->real_escape_string($userId) . "'";
+                if ($conn->query($sql)) {
+                    $message = 'Password updated successfully.';
+                } else {
+                    $message = 'Failed to update password.';
+                }
+            }
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -129,7 +209,7 @@ $selectedBrandColor = current_brand_color();
                                             </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary mt-3">
+                                        <button type="submit" name="save_preferences" class="btn btn-primary mt-3">
                                             <i class="bi bi-save"></i>
                                             Save Preferences
                                         </button>
@@ -158,7 +238,7 @@ $selectedBrandColor = current_brand_color();
                                             <input type="password" name="confirm_password" class="form-control">
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" name="update_password" class="btn btn-primary">
                                             <i class="bi bi-shield-lock"></i>
                                             Update Password
                                         </button>
@@ -195,6 +275,14 @@ $selectedBrandColor = current_brand_color();
         [...themeInputs, ...brandInputs].forEach((input) => {
             input.addEventListener('change', () => {
                 applyAppearance();
+                // ensure server receives a marker so preferences branch runs
+                if (!preferencesForm.querySelector('input[name="save_preferences"]')) {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'save_preferences';
+                    hidden.value = '1';
+                    preferencesForm.appendChild(hidden);
+                }
                 preferencesForm.requestSubmit();
             });
         });
