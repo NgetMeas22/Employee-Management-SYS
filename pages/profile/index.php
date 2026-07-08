@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center gap-3 mb-4">
                                 <?php $photoUrl = $currentPhoto ? app_base_url() . htmlspecialchars($currentPhoto) : app_base_url() . 'assets/images/profile.jpg'; ?>
-                                <img src="<?= $photoUrl ?>" class="rounded-circle" width="72" height="72" alt="Profile" style="object-fit: cover;">
+                                <img src="<?= $photoUrl ?>" class="rounded-circle border border-2 " width="72" height="72" alt="Profile" style="object-fit: cover;">
                                 <div>
                                     <h4 class="fw-bold mb-1"><?= htmlspecialchars($currentUsername) ?></h4>
                                     <p class="text-muted mb-0"><?= htmlspecialchars($currentRole ?: 'User') ?></p>

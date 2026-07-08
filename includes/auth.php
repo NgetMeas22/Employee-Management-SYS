@@ -4,7 +4,6 @@ require_once __DIR__ . "/../config/database.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 function app_base_url(): string
 {
     $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
@@ -15,7 +14,6 @@ function app_base_url(): string
     if ($position !== false) {
         return substr($scriptName, 0, $position + strlen($projectPath));
     }
-
     return '/';
 }
 
@@ -81,7 +79,6 @@ function redirect_if_logged_in(): void
         redirect_to('pages/dashboard/index.php');
     }
 }
-
 function set_login_cookie(string $name, string $value): void
 {
     setcookie($name, $value, [

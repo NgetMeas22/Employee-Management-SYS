@@ -10,7 +10,6 @@ function sidebar_active(string $section): string
         : 'text-dark';
 }
 ?>
-
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end min-vh-100" style="width:260px;">
     <a href="<?= app_base_url() ?>pages/dashboard/index.php" class="d-flex align-items-center mb-4 text-decoration-none">
         <div class="bg-primary text-white rounded p-2 me-2">

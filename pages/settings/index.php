@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.body.classList.add(`app-theme-${selectedTheme}`, `app-brand-${selectedBrand}`);
             document.body.style.setProperty('--app-primary', brandColors[selectedBrand] || brandColors.blue);
         }
-
+        
         [...themeInputs, ...brandInputs].forEach((input) => {
             input.addEventListener('change', () => {
                 applyAppearance();
