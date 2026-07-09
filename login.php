@@ -195,7 +195,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
             </div>
 
-            <!-- Right -->
+        
 
             <div class="col-md-6 login-form d-flex align-items-center">
 

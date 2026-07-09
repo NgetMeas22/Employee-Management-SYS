@@ -9,6 +9,48 @@ function sidebar_active(string $section): string
         ? 'active bg-primary text-white'
         : 'text-dark';
 }
+
+function format_bytes(int $bytes, int $precision = 2): string
+{
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $value = max($bytes, 0);
+    $index = 0;
+
+    while ($value >= 1024 && $index < count($units) - 1) {
+        $value /= 1024;
+        $index++;
+    }
+
+    return round($value, $precision) . ' ' . $units[$index];
+}
+
+function get_upload_storage_usage(): array
+{
+    $storagePath = dirname(__DIR__) . '/uploads';
+    $totalBytes = 1024 * 1024 * 1024 * 1024; // 1 TB
+
+    if (!is_dir($storagePath)) {
+        return ['used' => 0, 'total' => $totalBytes, 'percent' => 0];
+    }
+
+    $usedBytes = 0;
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($storagePath, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        if ($item->isFile()) {
+            $usedBytes += $item->getSize();
+        }
+    }
+
+    $percent = $totalBytes > 0 ? min(100, round(($usedBytes / $totalBytes) * 100)) : 0;
+
+    return ['used' => $usedBytes, 'total' => $totalBytes, 'percent' => $percent];
+}
+
+$storageUsage = get_upload_storage_usage();
 ?>
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end min-vh-100" style="width:260px;">
     <a href="<?= app_base_url() ?>pages/dashboard/index.php" class="d-flex align-items-center mb-4 text-decoration-none">
@@ -66,9 +108,9 @@ function sidebar_active(string $section): string
         <div class="card-body">
             <small class="fw-bold">Storage Used</small>
             <div class="progress mt-2">
-                <div class="progress-bar bg-primary" style="width:50%"></div>
+                <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $storageUsage['percent'] ?>%"></div>
             </div>
-            <small class="text-muted">500 GB of 1 TB</small>
+            <small class="text-muted"><?= format_bytes($storageUsage['used']) ?> of <?= format_bytes($storageUsage['total']) ?></small>
         </div>
     </div>
 </div>

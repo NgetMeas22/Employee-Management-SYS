@@ -1,6 +1,8 @@
 <?php
 $userId = $_SESSION['user_id'] ?? $_COOKIE['user_id'] ?? null;
 $navbarPhoto = '';
+$employeeCount = 0;
+$departmentCount = 0;
 if ($userId) {
     $photoCol = $conn->query("SHOW COLUMNS FROM user_s LIKE 'photo'");
     if ($photoCol && $photoCol->num_rows > 0) {
@@ -10,6 +12,17 @@ if ($userId) {
             $row = $photoRes->fetch_assoc();
             $navbarPhoto = $row['photo'] ?? '';
         }
+    }
+}
+if (isset($conn) && $conn instanceof mysqli) {
+    $employeesResult = $conn->query("SELECT COUNT(*) AS total FROM employees");
+    if ($employeesResult) {
+        $employeeCount = (int) ($employeesResult->fetch_assoc()['total'] ?? 0);
+    }
+
+    $departmentsResult = $conn->query("SELECT COUNT(*) AS total FROM departments");
+    if ($departmentsResult) {
+        $departmentCount = (int) ($departmentsResult->fetch_assoc()['total'] ?? 0);
     }
 }
 $navbarPhotoUrl = $navbarPhoto ? app_base_url() . htmlspecialchars($navbarPhoto) : app_base_url() . 'assets/images/profile.jpg';
@@ -37,8 +50,14 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
         </div>
 
         <div class="d-flex align-items-center gap-3">
-            <i class="bi bi-bell fs-5"></i>
-            <i class="bi bi-envelope fs-5"></i>
+            <div class="position-relative">
+                <i class="bi bi-bell fs-5"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?= (int) $employeeCount ?></span>
+            </div>
+            <div class="position-relative">
+                <i class="bi bi-envelope fs-5"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"><?= (int) $departmentCount ?></span>
+            </div>
             <a href="<?= app_base_url() ?>pages/profile/index.php">
                 <img src="<?= htmlspecialchars($navbarPhotoUrl) ?>" class=" border border-2 border-dark-subtle rounded-circle" alt="Admin" width="40" height="40" style="object-fit: cover;">
             </a>
@@ -61,16 +80,13 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
             results.style.display = 'block';
             return;
         }
-
         let any = false;
-
         if (data.employees && data.employees.length) {
             any = true;
             const header = document.createElement('div');
             header.className = 'list-group-item small text-muted';
             header.textContent = 'Employees';
             results.appendChild(header);
-
             data.employees.forEach(emp => {
                 const a = document.createElement('a');
                 a.className = 'list-group-item list-group-item-action d-flex gap-2 align-items-center';
@@ -82,7 +98,6 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
                 results.appendChild(a);
             });
         }
-
         if (data.departments && data.departments.length) {
             any = true;
             const header = document.createElement('div');

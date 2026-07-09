@@ -102,14 +102,17 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
     <div class="container">
         <div class="card register-card">
             <div class="row g-0">
-                <div class="col-md-5 d-none d-md-flex brand-panel flex-column justify-content-center">
-                    
-                    <h2 class="fw-bold">Create Your Account</h2>
-                    <p class="mt-3 mb-0">
-                        Register an admin user, then login with the same email and password.
-                    </p>
-                </div>
-
+                <div class="col-md-5 d-none d-md-flex flex-column justify-content-center"
+    style=" background:url('https://png.pngtree.com/thumb_back/fh260/background/20231220/pngtree-c4d-three-dimensional-business-technology-machinery-technology-interconnection-future-technology-business-photo-image_15529757.png') center center/cover no-repeat;position:relative;padding:60px;">
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(13,110,253,0.65);">
+        </div>
+    <div style="position:relative; z-index:2; color:white;">
+        <h2 class="fw-bold">Create Your Account</h2>
+        <p class=" mt-3 mb-0">
+            Register an admin user, then login with the same email and password.
+        </p>
+    </div>
+</div>
                 <div class="col-md-7 form-panel">
                     <div class="logo mx-auto">
                         <i class="bi bi-person-plus-fill"></i>
@@ -171,3 +174,4 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
     </div>
 </body>
 </html>
+\
