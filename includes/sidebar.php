@@ -32,27 +32,22 @@ function get_upload_storage_usage(): array
     if (!is_dir($storagePath)) {
         return ['used' => 0, 'total' => $totalBytes, 'percent' => 0];
     }
-
     $usedBytes = 0;
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($storagePath, FilesystemIterator::SKIP_DOTS),
         RecursiveIteratorIterator::SELF_FIRST
     );
-
     foreach ($iterator as $item) {
         if ($item->isFile()) {
             $usedBytes += $item->getSize();
         }
     }
-
     $percent = $totalBytes > 0 ? min(100, round(($usedBytes / $totalBytes) * 100)) : 0;
-
     return ['used' => $usedBytes, 'total' => $totalBytes, 'percent' => $percent];
 }
-
 $storageUsage = get_upload_storage_usage();
 ?>
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end min-vh-100" style="width:260px;">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end min-vh-100" style="width:280px;">
     <a href="<?= app_base_url() ?>pages/dashboard/index.php" class="d-flex align-items-center mb-4 text-decoration-none">
         <div class="bg-primary text-white rounded p-2 me-2">
             <i class="bi bi-people-fill"></i>
@@ -60,7 +55,7 @@ $storageUsage = get_upload_storage_usage();
 
         <div>
             <h4 class="m-0 fw-bold text-dark">GenZ SYS</h4>
-            <small class="text-muted">NG-Meas</small>
+            <small class="text-muted fw-bold">NG-Meas</small>
         </div>
     </a>
 

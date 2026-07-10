@@ -260,7 +260,7 @@ for ($i = 5; $i >= 0; $i--) {
                                             <h5 class="fw-bold mb-0">Recent Employees</h5>
                                             <small class="text-muted">Latest employees added to the system</small>
                                         </div>
-                                        <a href="../employees/index.php" class="btn btn-sm btn-outline-primary">View All</a>
+                                        <a href="../employees/index.php" class="btn btn-sm btn-outline-primary">View Employees All</a>
                                     </div>
                                 </div>
                                 <div class="card-body px-4 pb-4">
@@ -292,7 +292,7 @@ for ($i = 5; $i >= 0; $i--) {
                                                                 </span>
                                                             </td>
                                                             <td>
-                                                                <a href="../employees/view.php?id=<?= $emp['employee_id'] ?>" class="btn btn-sm btn-outline-primary">View</a>
+                                                                <a href="../employees/view.php?id=<?= $emp['employee_id'] ?>" class="btn btn-sm btn-outline-primary">View Detail</a>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
