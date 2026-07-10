@@ -203,5 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
             </main>
         </div>
     </div>
+<script src="../../assets/js/submit-loading.js"></script>
 </body>
 </html>

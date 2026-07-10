@@ -15,6 +15,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
     $notice = $messages[$_GET['error']];
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -172,6 +173,6 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
             </div>
         </div>
     </div>
+<script src="assets/js/submit-loading.js"></script>
 </body>
 </html>
-\

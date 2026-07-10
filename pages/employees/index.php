@@ -79,7 +79,10 @@ if ($res) {
                                                     <img src="<?= $imagePath ?>" alt="Employee photo" class=" border-dark-subtle border-2 border rounded-3" width="75" height="75" style="object-fit: cover;">
                                                 </td> 
                                                 <td class="text-end">
-                                                    
+                                                    <a href="view.php?id=<?= (int) $employee['employee_id'] ?>" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-eye"></i>
+                                                        View Detail
+                                                    </a>
                                                     <a href="edit.php?id=<?= (int) $employee['employee_id'] ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="bi bi-pencil-square"></i>
                                                         Edit
@@ -104,5 +107,6 @@ if ($res) {
             </main>
         </div>
     </div>
+<script src="../../assets/js/submit-loading.js"></script>
 </body>
 </html>

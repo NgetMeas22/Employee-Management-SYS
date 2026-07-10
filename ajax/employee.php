@@ -1,6 +1,19 @@
-<?php
+<!-- <?php
 require_once __DIR__ . "/../includes/auth.php";
 require_login();
+
+$employees = [];
+$sql = "SELECT e.employee_id, e.first_name, e.last_name, e.position, COALESCE(d.department_name, '') AS department, e.status, e.email, e.photo
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        ORDER BY e.employee_id DESC";
+
+$res = $conn->query($sql);
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $employees[] = $row;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -159,28 +172,29 @@ require_login();
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="<?= $emp['avatar'] ?>" class="avatar" alt="Avatar">
+                                                <?php $avatarPath = !empty($emp['photo']) ? app_base_url() . htmlspecialchars($emp['photo']) : app_base_url() . 'assets/images/profile.jpg'; ?>
+                                                <img src="<?= $avatarPath ?>" class="avatar" alt="Avatar">
                                                 <div>
-                                                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($emp['name']) ?></h6>
-                                                    <small class="text-muted"><?= htmlspecialchars($emp['email']) ?></small>
+                                                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars(($emp['first_name'] ?? '') . ' ' . ($emp['last_name'] ?? '')) ?></h6>
+                                                    <small class="text-muted"><?= htmlspecialchars($emp['email'] ?? '') ?></small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="text-dark fw-medium"><?= htmlspecialchars($emp['role']) ?></span>
+                                            <span class="text-dark fw-medium"><?= htmlspecialchars($emp['position'] ?? '') ?></span>
                                         </td>
                                         <td>
-                                            <span class="text-secondary"><?= htmlspecialchars($emp['dept']) ?></span>
+                                            <span class="text-secondary"><?= htmlspecialchars($emp['department'] ?? '') ?></span>
                                         </td>
                                         <td>
-                                            <?php if ($emp['status'] === 'Active'): ?>
+                                            <?php if (($emp['status'] ?? '') === 'Active'): ?>
                                                 <span class="badge badge-active px-2.5 py-1.5 rounded-pill">Active</span>
                                             <?php else: ?>
-                                                <span class="badge badge-leave px-2.5 py-1.5 rounded-pill">On Leave</span>
+                                                <span class="badge badge-leave px-2.5 py-1.5 rounded-pill"><?= htmlspecialchars($emp['status'] ?? 'Inactive') ?></span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="pe-4 text-end">
-                                            </td>
+                                        </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -263,5 +277,6 @@ require_login();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/submit-loading.js"></script>
 </body>
-</html>
+</html> -->

@@ -278,5 +278,6 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
 </div>
 
+<script src="assets/js/submit-loading.js"></script>
 </body>
 </html>

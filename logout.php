@@ -37,5 +37,6 @@ require_login();
             </div>
         </div>
     </div>
+<script src="assets/js/submit-loading.js"></script>
 </body>
 </html>

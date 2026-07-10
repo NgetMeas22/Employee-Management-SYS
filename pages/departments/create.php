@@ -75,5 +75,6 @@ $errors = [
             </main>
         </div>
     </div>
+<script src="../../assets/js/submit-loading.js"></script>
 </body>
 </html>

@@ -131,7 +131,7 @@ if ($id > 0) {
                         <!-- Employee Header -->
                         <div class="employee-header rounded-4 mb-4">
                             <div class="container-fluid">
-                                <div class="d-flex align-items-center  gap-5  py-2 px-5">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-4 py-2 px-5">
                                  
                                     <div>
                                         <h1 class="fw-bold mb-2"><?= htmlspecialchars($employee['first_name'] . ' ' . $employee['last_name']) ?></h1>
@@ -144,7 +144,7 @@ if ($id > 0) {
                                     </div>
                                        <div>
                                         <?php if (!empty($employee['photo'])): ?>
-                                            <img src="../../uploads/employees/<?= htmlspecialchars($employee['photo']) ?>" alt="<?= htmlspecialchars($employee['first_name']) ?>" class="avatar-large">
+                                            <img src="<?= app_base_url() . htmlspecialchars($employee['photo']) ?>" alt="<?= htmlspecialchars($employee['first_name']) ?>" class="avatar-large">
                                         <?php else: ?>
                                             <div class="avatar-large d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.2);">
                                                 <i class="bi bi-person-fill" style="font-size: 4rem;"></i>
@@ -267,5 +267,6 @@ if ($id > 0) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../assets/js/submit-loading.js"></script>
 </body>
 </html>
