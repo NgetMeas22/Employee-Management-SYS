@@ -77,8 +77,9 @@ if ($res) {
                                                 <td class="text-center">
                                                     <?php $imagePath = !empty($employee['photo']) ? app_base_url() . htmlspecialchars($employee['photo']) : app_base_url() . 'assets/images/profile.jpg'; ?>
                                                     <img src="<?= $imagePath ?>" alt="Employee photo" class=" border-dark-subtle border-2 border rounded-3" width="75" height="75" style="object-fit: cover;">
-                                                </td>
+                                                </td> 
                                                 <td class="text-end">
+                                                    
                                                     <a href="edit.php?id=<?= (int) $employee['employee_id'] ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="bi bi-pencil-square"></i>
                                                         Edit
@@ -87,10 +88,12 @@ if ($res) {
                                                         <input type="hidden" name="id" value="<?= (int) $employee['employee_id'] ?>">
                                                         <input type="hidden" name="image" value="<?= htmlspecialchars($employee['photo'] ?? '') ?>">
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                        
                                                     </form>
+                                                    
                                                 </td>
                                             </tr>
-                                        <?php endforeach; ?>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

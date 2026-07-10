@@ -1,15 +1,6 @@
 <?php
 require_once __DIR__ . "/../includes/auth.php";
 require_login();
-
-// Mock data representing the exact table items in your image
-$employees = [
-    ['name' => 'Sarah Jenkins', 'email' => 'sarah.j@workforce.pro', 'role' => 'Senior UX Designer', 'dept' => 'Design', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=47'],
-    ['name' => 'David Miller', 'email' => 'd.miller@workforce.pro', 'role' => 'Lead Developer', 'dept' => 'Engineering', 'status' => 'On Leave', 'avatar' => 'https://i.pravatar.cc/150?img=33'],
-    ['name' => 'Robert Wilson', 'email' => 'r.wilson@workforce.pro', 'role' => 'Director of Ops', 'dept' => 'Management', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=68'],
-    ['name' => 'Emily Thompson', 'email' => 'e.thompson@workforce.pro', 'role' => 'HR Manager', 'dept' => 'Human Resources', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=32'],
-    ['name' => 'James Peterson', 'email' => 'j.peter@workforce.pro', 'role' => 'Product Marketer', 'dept' => 'Marketing', 'status' => 'Active', 'avatar' => 'https://i.pravatar.cc/150?img=59']
-];
 ?>
 <!DOCTYPE html>
 <html lang="en">
