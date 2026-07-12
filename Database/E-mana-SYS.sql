@@ -1,4 +1,4 @@
-
+/*
 USE meas_sys;
 
 -- Admin Login==========================
@@ -72,3 +72,5 @@ SELECT * FROM employees;
 
 
 DROP TABLE employees
+
+*/
