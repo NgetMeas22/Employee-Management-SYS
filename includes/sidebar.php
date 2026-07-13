@@ -27,10 +27,10 @@ function format_bytes(int $bytes, int $precision = 2): string
 function get_upload_storage_usage(): array
 {
     $storagePath = dirname(__DIR__) . '/uploads';
-    $totalBytes = 1024 * 1024 * 1024 * 1024; // 1 TB
+    $totalBytes = 1024 * 1024 * 1024; // 1 GB
 
     if (!is_dir($storagePath)) {
-        return ['used' => 0, 'total' => $totalBytes, 'percent' => 0];
+        return ['used' => 0, 'total' => $totalBytes, 'percent' => 0, 'displayPercent' => 0];
     }
     $usedBytes = 0;
     $iterator = new RecursiveIteratorIterator(
@@ -42,8 +42,15 @@ function get_upload_storage_usage(): array
             $usedBytes += $item->getSize();
         }
     }
-    $percent = $totalBytes > 0 ? min(100, round(($usedBytes / $totalBytes) * 100)) : 0;
-    return ['used' => $usedBytes, 'total' => $totalBytes, 'percent' => $percent];
+    $percent = $totalBytes > 0 ? min(100, round(($usedBytes / $totalBytes) * 100, 2)) : 0;
+    $displayPercent = $usedBytes > 0 ? max(1, $percent) : 0;
+
+    return [
+        'used' => $usedBytes,
+        'total' => $totalBytes,
+        'percent' => $percent,
+        'displayPercent' => $displayPercent,
+    ];
 }
 $storageUsage = get_upload_storage_usage();
 ?>
@@ -103,7 +110,9 @@ $storageUsage = get_upload_storage_usage();
         <div class="card-body">
             <small class="fw-bold">Storage Used</small>
             <div class="progress mt-2">
-                <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $storageUsage['percent'] ?>%"></div>
+                <div class="progress-bar bg-primary" role="progressbar"
+                    style="width: <?= $storageUsage['displayPercent'] ?>%"
+                    aria-valuenow="<?= $storageUsage['percent'] ?>" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <small class="text-muted"><?= format_bytes($storageUsage['used']) ?> of <?= format_bytes($storageUsage['total']) ?></small>
         </div>

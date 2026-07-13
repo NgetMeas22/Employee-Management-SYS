@@ -138,9 +138,9 @@ for ($i = 5; $i >= 0; $i--) {
                             <p class="text-muted mb-0">Here's what's happening with your workforce today.</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 border-secondary-subtle text-dark bg-white">
+                            <a href="export.php" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 border-secondary-subtle text-dark bg-white">
                                 <i class="bi bi-download"></i> Export Report
-                            </button>
+                            </a>
                             <a href="../employees/create.php" class="btn btn-primary d-inline-flex align-items-center gap-2 bg-gradient">
                                 <i class="bi bi-plus-lg"></i> New Employee
                             </a>
