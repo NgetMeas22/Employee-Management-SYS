@@ -30,9 +30,12 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
     $navbarPhotoUrl .= '?v=' . filemtime(__DIR__ . '/../' . $navbarPhoto);
 }
 ?>
-<nav class="navbar navbar-expand-lg bg-white border-bottom px-4 py-3">
+<nav class="navbar navbar-expand-lg bg-white border-bottom px-4 py-3 position-sticky top-0 flex-shrink-0" style="z-index:1030;">
     <div class="container-fluid">
         <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-light border d-lg-none me-2" id="sidebarToggle" aria-label="Open sidebar">
+                <i class="bi bi-list fs-4"></i>
+            </button>
             <div class="input-group search-box w-100 position-relative" style="max-width:500px;">
     <span class="input-group-text bg-white border-end-0 rounded-start-pill">
         <i class="bi bi-search"></i>
@@ -166,6 +169,38 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
         if (!ev.target.closest('.search-box')) {
             results.style.display = 'none';
         }
+    });
+
+    // mobile sidebar toggle
+    const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+        if (!sidebar || !backdrop) return;
+        sidebar.classList.add('show');
+        backdrop.classList.add('show');
+    }
+    function closeSidebar() {
+        if (!sidebar || !backdrop) return;
+        sidebar.classList.remove('show');
+        backdrop.classList.remove('show');
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    if (sidebar) {
+        sidebar.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-link')) closeSidebar();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSidebar();
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 992) closeSidebar();
     });
 })();
 </script>

@@ -9,7 +9,6 @@ function sidebar_active(string $section): string
         ? 'active bg-primary text-white'
         : 'text-dark';
 }
-
 function format_bytes(int $bytes, int $precision = 2): string
 {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -23,7 +22,6 @@ function format_bytes(int $bytes, int $precision = 2): string
 
     return round($value, $precision) . ' ' . $units[$index];
 }
-
 function get_upload_storage_usage(): array
 {
     $storagePath = dirname(__DIR__) . '/uploads';
@@ -54,17 +52,22 @@ function get_upload_storage_usage(): array
 }
 $storageUsage = get_upload_storage_usage();
 ?>
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end min-vh-100" style="width:280px;">
-    <a href="<?= app_base_url() ?>pages/dashboard/index.php" class="d-flex align-items-center mb-4 text-decoration-none">
-        <div class="bg-primary text-white rounded p-2 me-2">
-            <i class="bi bi-people-fill"></i>
-        </div>
+<div id="appSidebar" class="app-sidebar d-flex flex-column flex-shrink-0 p-3 bg-white border-end" style="width:280px; position:sticky; top:0; height:100vh; overflow:hidden;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <a href="<?= app_base_url() ?>pages/dashboard/index.php" class="d-flex align-items-center text-decoration-none">
+            <div class="bg-primary text-white rounded p-2 me-2">
+                <i class="bi bi-people-fill"></i>
+            </div>
 
-        <div>
-            <h4 class="m-0 fw-bold text-dark">GenZ SYS</h4>
-            <small class="text-muted fw-bold">NG-Meas</small>
-        </div>
-    </a>
+            <div>
+                <h4 class="m-0 fw-bold text-dark">GenZ SYS</h4>
+                <small class="text-muted fw-bold">NG-Meas</small>
+            </div>
+        </a>
+        <button type="button" class="btn btn-light border d-lg-none" id="sidebarClose" aria-label="Close sidebar">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
 
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item mb-2">
@@ -118,3 +121,4 @@ $storageUsage = get_upload_storage_usage();
         </div>
     </div>
 </div>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
