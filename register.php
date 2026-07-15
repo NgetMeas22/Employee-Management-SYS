@@ -105,10 +105,11 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
             <div class="row g-0">
                 <div class="col-md-5 d-none d-md-flex flex-column justify-content-center"
     style=" background:url('https://png.pngtree.com/thumb_back/fh260/background/20231220/pngtree-c4d-three-dimensional-business-technology-machinery-technology-interconnection-future-technology-business-photo-image_15529757.png') center center/cover no-repeat;position:relative;padding:60px;">
-    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(13,110,253,0.65);">
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(31, 57, 95, 0.45);">
         </div>
     <div style="position:relative; z-index:2; color:white;">
         <h2 class="fw-bold">Create Your Account</h2>
+        <h4 class="fw-bold m-3">To see system mnus smos</h4>
         <p class=" mt-3 mb-0">
             Register an admin user, then login with the same email and password.
         </p>
@@ -116,11 +117,12 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 </div>
                 <div class="col-md-7 form-panel">
                     <div class="logo mx-auto">
-                        <i class="bi bi-person-plus-fill"></i>
+                        <!-- <i class="bi bi-person-plus-fill"></i> -->
+                         <img class=" w-100 h-100 object-fit-cover rounded-circle " src="assets/images/hehe.jpg" alt="logo">
                     </div>
 
-                    <h2 class="text-center fw-bold">Register</h2>
-                    <p class="text-center text-muted mb-4">Add your first system account</p>
+                    <h2 class="text-center fw-bold">Register Form</h2>
+                    <p class="text-center text-muted mb-4">Add your first system account if u think me smos</p>
 
                     <?php if ($notice): ?>
                         <div class="alert alert-<?= htmlspecialchars($notice[0]) ?> py-2" role="alert">
@@ -161,13 +163,13 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
                         <button class="btn btn-primary btn-register w-100" type="submit" name="register">
                             <i class="bi bi-person-check-fill"></i>
-                            Register
+                            Register if u one-sided love
                         </button>
                     </form>
 
                     <p class="text-center text-muted small mt-4 mb-0">
                         Already have an account?
-                        <a href="login.php" class="fw-semibold"> Login Here</a>
+                        <a href="login.php" class="fw-semibold"> Login Here Bro</a>
                     </p>
                 </div>
             </div>

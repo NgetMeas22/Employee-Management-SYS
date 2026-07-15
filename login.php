@@ -184,7 +184,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
                 <div class="left-content">
 
-                    <h2>Employee Management System</h2>
+                    <h2>GenZ Management System</h2>
 
                     <p class="mt-3">
                         Manage employees, departments,
@@ -202,15 +202,16 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
                 <div class="w-100">
 
                     <div class="logo">
-                        <i class="bi bi-people-fill"></i>
+                        <!-- <i class="bi bi-people-fill"></i> -->
+                         <img class=" w-100 h-100 object-fit-cover rounded-circle " src="assets/images/sad.jpg" alt="logo">
                     </div>
 
                     <h2 class="text-center fw-bold">
-                        Welcome Back
+                        Welcome Back mnus smos  
                     </h2>
 
                     <p class="text-center text-muted mb-4">
-                        Login to continue
+                        Login to see system mnus smos
                     </p>
 
                     <?php if ($notice): ?>
@@ -257,7 +258,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
                             name="login">
 
                             <i class="bi bi-box-arrow-in-right"></i>
-                            Login
+                            Login Hury Up
 
                         </button>
 
@@ -265,7 +266,7 @@ if (isset($_GET['error'], $messages[$_GET['error']])) {
 
                     <p class="text-center text-muted small mt-4 mb-0">
                         Don't have an account?
-                        <a href="register.php" class="fw-semibold">Register Here</a>
+                        <a href="register.php" class="fw-semibold">Register Here Bro</a>
                     </p>
 
                 </div>
