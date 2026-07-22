@@ -29,11 +29,39 @@ body{
     color:white;
 }
 
+.navbar-theme-toggle{
+    align-items:center;
+    display:inline-flex;
+    gap:6px;
+}
+
 .card{
     border:none;
     border-radius:15px;
     background:var(--app-surface);
     color:var(--app-text);
+}
+
+.department-card{
+    min-width:0;
+}
+
+.department-card-actions .btn{
+    white-space:nowrap;
+}
+
+.department-card-description,
+.department-detail-description{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.department-card-description{
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    display:-webkit-box;
+    min-height:3rem;
+    overflow:hidden;
 }
 
 .table{
@@ -101,6 +129,8 @@ body{
 .app-theme-system .bg-white,
 .app-theme-dark .navbar,
 .app-theme-system .navbar,
+.app-theme-dark .dropdown-menu,
+.app-theme-system .dropdown-menu,
 .app-theme-dark .login-form,
 .app-theme-system .login-form,
 .app-theme-dark .form-panel,
@@ -151,6 +181,8 @@ body{
 .app-theme-system .border-end,
 .app-theme-dark .border-bottom,
 .app-theme-system .border-bottom,
+.app-theme-dark .dropdown-menu,
+.app-theme-system .dropdown-menu,
 .app-theme-dark .filter-card,
 .app-theme-system .filter-card,
 .app-theme-dark .directory-card,
@@ -182,6 +214,25 @@ body{
 .app-theme-dark .form-control::placeholder,
 .app-theme-system .form-control::placeholder{
     color:#94a3b8;
+}
+
+.app-theme-dark .dropdown-item,
+.app-theme-system .dropdown-item{
+    color:var(--app-text);
+}
+
+.app-theme-dark .dropdown-item:hover,
+.app-theme-system .dropdown-item:hover,
+.app-theme-dark .dropdown-item:focus,
+.app-theme-system .dropdown-item:focus{
+    background-color:#273449;
+    color:var(--app-text);
+}
+
+.app-theme-dark .btn-outline-secondary,
+.app-theme-system .btn-outline-secondary{
+    border-color:var(--app-border);
+    color:var(--app-text);
 }
 
 .appearance-panel{

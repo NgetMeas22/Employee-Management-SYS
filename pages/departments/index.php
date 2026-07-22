@@ -91,9 +91,9 @@ $errors = [
                         <?php endif; ?>
 
                         <?php foreach ($departments as $department): ?>
-                            <div class="col-md-6 col-xl-3">
-                                <div class="card shadow-sm h-100">
-                                    <div class="card-body">
+                            <div class="col-md-6 d-flex">
+                                <div class="card shadow-sm department-card w-100">
+                                    <div class="card-body d-flex flex-column">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
                                             <div class="bg-primary-subtle text-primary rounded p-2">
                                                 <i class="bi bi-building"></i>
@@ -101,23 +101,27 @@ $errors = [
                                             <span class="badge bg-success-subtle text-success">Active</span>
                                         </div>
 
-                                        <h5 class="fw-bold mb-1"><?= htmlspecialchars($department['department_name']) ?></h5>
-                                        <p class="text-muted mb-3"><?= htmlspecialchars($department['description'] ?: 'No description added.') ?></p>
+                                        <h3 class="fw-bold mb-1 py-4"><?= htmlspecialchars($department['department_name']) ?></h3>
+                                        <span class="text-muted department-card-description mb-3"><?= htmlspecialchars($department['description'] ?: 'No description added.') ?></span>
 
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="text-muted small">Employees</span>
+                                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                                            <span class="text-muted mt-3 small">Employees</span>
                                             <span class="fw-bold"><?= htmlspecialchars((string) $department['employees']) ?></span>
                                         </div>
 
-                                        <div class="d-flex gap-2 mt-3">
-                                            <a href="edit.php?id=<?= htmlspecialchars((string) $department['department_id']) ?>" class="btn btn-outline-primary btn-sm flex-fill">
+                                        <div class="d-flex flex-wrap gap-2 mt-5 p-2 department-card-actions">
+                                            <a href="view.php?id=<?= htmlspecialchars((string) $department['department_id']) ?>" class="btn btn-outline-success px-5 py-2 btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                                View Detail
+                                            </a>
+                                            <a href="edit.php?id=<?= htmlspecialchars((string) $department['department_id']) ?>" class="btn btn-outline-primary px-5 py-2 btn-sm">
                                                 <i class="bi bi-pencil-square"></i>
                                                 Edit
                                             </a>
-                                            <form action="../../ajax/department.php" method="POST" class="flex-fill" onsubmit="return confirm('Delete this department?');">
+                                            <form action="../../ajax/department.php" method="POST" class="d-inline" onsubmit="return confirm('Delete this department?');">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="department_id" value="<?= htmlspecialchars((string) $department['department_id']) ?>">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                                <button type="submit" class="btn btn-outline-danger px-5 py-2 btn-sm">
                                                     <i class="bi bi-trash"></i>
                                                     Delete
                                                 </button>

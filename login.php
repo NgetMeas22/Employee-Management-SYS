@@ -5,6 +5,8 @@ redirect_if_logged_in();
 $messages = [
     'email' => ['danger', 'No account was found for that email address.'],
     'password' => ['danger', 'The password is incorrect. Please try again.'],
+    'otp_send' => ['danger', 'We could not send a verification email. Check your mail configuration and try again.'],
+    'otp_required' => ['warning', 'Please login with your email and password first.'],
     'login_required' => ['warning', 'Please login before opening the dashboard.'],
 ];
 

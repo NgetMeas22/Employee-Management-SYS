@@ -3,6 +3,14 @@ $userId = $_SESSION['user_id'] ?? $_COOKIE['user_id'] ?? null;
 $navbarPhoto = '';
 $employeeCount = 0;
 $departmentCount = 0;
+$navbarTheme = current_theme();
+$navbarThemeLabels = [
+    'light' => ['Light', 'bi-brightness-high'],
+    'dark' => ['Dark', 'bi-moon'],
+    'system' => ['System', 'bi-window'],
+];
+$navbarThemeLabel = $navbarThemeLabels[$navbarTheme] ?? $navbarThemeLabels['light'];
+$navbarReturnTo = $_SERVER['REQUEST_URI'] ?? app_base_url() . 'pages/dashboard/index.php';
 if ($userId) {
     $photoCol = $conn->query("SHOW COLUMNS FROM user_s LIKE 'photo'");
     if ($photoCol && $photoCol->num_rows > 0) {
@@ -60,6 +68,24 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
             <div class="position-relative">
                 <i class="bi bi-envelope fs-5"></i>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"><?= (int) $departmentCount ?></span>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle navbar-theme-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi <?= htmlspecialchars($navbarThemeLabel[1]) ?>"></i>
+                    <span><?= htmlspecialchars($navbarThemeLabel[0]) ?></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-2 shadow-sm">
+                    <?php foreach ($navbarThemeLabels as $themeValue => $themeOption): ?>
+                        <form action="<?= app_base_url() ?>ajax/appearance.php" method="POST">
+                            <input type="hidden" name="theme" value="<?= htmlspecialchars($themeValue) ?>">
+                            <input type="hidden" name="return_to" value="<?= htmlspecialchars($navbarReturnTo) ?>">
+                            <button type="submit" class="dropdown-item rounded d-flex align-items-center gap-2 <?= $navbarTheme === $themeValue ? 'active' : '' ?>">
+                                <i class="bi <?= htmlspecialchars($themeOption[1]) ?>"></i>
+                                <?= htmlspecialchars($themeOption[0]) ?>
+                            </button>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <a href="<?= app_base_url() ?>pages/profile/index.php">
                 <img src="<?= htmlspecialchars($navbarPhotoUrl) ?>" class=" border border-2 border-dark-subtle rounded-circle" alt="Admin" width="40" height="40" style="object-fit: cover;">
@@ -169,6 +195,22 @@ if ($navbarPhoto && file_exists(__DIR__ . '/../' . $navbarPhoto)) {
         if (!ev.target.closest('.search-box')) {
             results.style.display = 'none';
         }
+        document.querySelectorAll('.dropdown-menu.show').forEach((menu) => {
+            if (!menu.closest('.dropdown').contains(ev.target)) {
+                menu.classList.remove('show');
+                menu.closest('.dropdown').querySelector('[data-bs-toggle="dropdown"]')?.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+
+    document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((button) => {
+        button.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            const menu = button.closest('.dropdown')?.querySelector('.dropdown-menu');
+            if (!menu) return;
+            const isOpen = menu.classList.toggle('show');
+            button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
     });
 
     // mobile sidebar toggle

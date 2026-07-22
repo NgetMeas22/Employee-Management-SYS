@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS user_s (
 DROP TABLE users_s;
 SELECT * FROM user_s;
 
+-- One active login code is kept per user. Run this after creating user_s.
+CREATE TABLE IF NOT EXISTS user_otp (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    otp_code VARCHAR(6) NOT NULL,
+    expired_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user_s(id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 -- ======================================
 
 

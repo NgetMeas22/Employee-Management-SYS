@@ -99,6 +99,60 @@ function clear_login_cookie(string $name): void
     ]);
 }
 
+function complete_login(array $user): void
+{
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = (int) $user['id'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'] ?? '';
+
+    set_login_cookie('user_id', (string) $user['id']);
+    set_login_cookie('username', $user['username']);
+    set_login_cookie('role', $user['role'] ?? '');
+}
+
+function start_otp_login(array $user): bool
+{
+    global $conn;
+
+    require_once __DIR__ . '/../config/mail.php';
+
+    $otpCode = (string) random_int(100000, 999999);
+    $conn->begin_transaction();
+    try {
+        $userId = (int) $user['id'];
+        $delete = $conn->prepare('DELETE FROM user_otp WHERE user_id = ?');
+        $delete->bind_param('i', $userId);
+        $delete->execute();
+
+        // Let MySQL calculate the expiry because verification also uses MySQL NOW().
+        // This avoids PHP/MySQL timezone differences expiring a new code immediately.
+        $insert = $conn->prepare(
+            'INSERT INTO user_otp (user_id, otp_code, expired_at)
+             VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE))'
+        );
+        $insert->bind_param('is', $userId, $otpCode);
+        $insert->execute();
+
+        $conn->commit();
+    } catch (Throwable $exception) {
+        $conn->rollback();
+        return false;
+    }
+
+    if (!send_otp_email($user['email'], $user['username'], $otpCode)) {
+        $userId = (int) $user['id'];
+        $delete = $conn->prepare('DELETE FROM user_otp WHERE user_id = ?');
+        $delete->bind_param('i', $userId);
+        $delete->execute();
+        return false;
+    }
+
+    $_SESSION['otp_user_id'] = (int) $user['id'];
+    $_SESSION['otp_expires_at'] = time() + 600;
+    return true;
+}
+
 if (isset($_POST['logout']) || isset($_GET['logout'])) {
     $_SESSION = [];
 
@@ -177,16 +231,11 @@ if (isset($_POST['login'])) {
         $user = $result->fetch_assoc();
 
         if (password_verify($pwd, $user['pwd'])) {
+            if (start_otp_login($user)) {
+                redirect_to('verify_otp.php');
+            }
 
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'] ?? '';
-
-            set_login_cookie("user_id", (string) $user['id']);
-            set_login_cookie("username", $user['username']);
-            set_login_cookie("role", $user['role'] ?? '');
-
-            redirect_to('pages/dashboard/index.php');
+            redirect_to('login.php?error=otp_send');
 
         } else {
             redirect_to('login.php?error=password');
@@ -195,4 +244,23 @@ if (isset($_POST['login'])) {
     } else {
         redirect_to('login.php?error=email');
     }
+}
+
+/* RESEND OTP */
+if (isset($_POST['resend_otp'])) {
+    $userId = (int) ($_SESSION['otp_user_id'] ?? 0);
+    if ($userId === 0) {
+        redirect_to('login.php?error=otp_required');
+    }
+
+    $statement = $conn->prepare('SELECT * FROM user_s WHERE id = ? LIMIT 1');
+    $statement->bind_param('i', $userId);
+    $statement->execute();
+    $user = $statement->get_result()->fetch_assoc();
+
+    if ($user && start_otp_login($user)) {
+        redirect_to('verify_otp.php?status=resent');
+    }
+
+    redirect_to('verify_otp.php?error=send');
 }
