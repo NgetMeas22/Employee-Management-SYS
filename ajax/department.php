@@ -94,7 +94,7 @@ if ($action === 'delete') {
     $stmt = $conn->prepare("DELETE FROM departments WHERE department_id = ?");
     $stmt->bind_param('i', $departmentId);
 
-    if ($stmt->execute()) {
+    if ($stmt->execute()) {  
         redirect_departments('?status=deleted');
     }
 

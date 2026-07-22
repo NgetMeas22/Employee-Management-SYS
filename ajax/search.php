@@ -32,7 +32,6 @@ if ($res) {
         ];
     }
 }
-
 // Search departments
 $sqlDept = "SELECT department_id, department_name FROM departments WHERE department_name LIKE '$like' LIMIT 7";
 $res = $conn->query($sqlDept);
