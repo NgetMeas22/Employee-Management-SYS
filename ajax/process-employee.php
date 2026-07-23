@@ -28,7 +28,7 @@ $status = clean($_POST['status'] ?? 'Active');
 $validStatuses = ['Active', 'Inactive', 'On Leave', 'Resigned'];
 if ($gender !== 'Male' && $gender !== 'Female') {
     redirect_to('pages/employees/create.php?error=invalid_gender');
-}
+} 
 if ($dob === '') {
     redirect_to('pages/employees/create.php?error=invalid_dob');
 }

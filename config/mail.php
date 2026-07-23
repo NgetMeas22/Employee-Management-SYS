@@ -1,20 +1,34 @@
 <?php
-/*
- * Update these values before using SMTP. For Gmail, use an App Password,
- * never your normal account password.
- */
-const OTP_MAIL_FROM = 'ngetmeas285@gmail.com';
-const OTP_MAIL_FROM_NAME = 'Employee Management System';
-const OTP_SMTP_HOST = 'smtp.gmail.com';
-const OTP_SMTP_PORT = 587;
-const OTP_SMTP_USERNAME = 'ngetmeas285@gmail.com';
-// Paste a Google App Password here. Do not use your normal Gmail password.
-const OTP_SMTP_PASSWORD = 'xxfs mfby makf aipi';
+/* Each SMTP account needs its own Gmail App Password. */
+const OTP_ACCOUNTS = [
+    'default' => [
+        'from' => 'measm2519@gmail.com',
+        'from_name' => 'Employee Management System',
+        'smtp_host' => 'smtp.gmail.com',
+        'smtp_port' => 587,
+        'smtp_username' => 'measm2519@gmail.com',
+        'smtp_password' => 'kbdg ifcz nvyb ugmv',
+    ],
+    'backup' => [
+        'from' => 'ngetmeas285@gmail.com',
+        'from_name' => 'Employee Management System',
+        'smtp_host' => 'smtp.gmail.com',
+        'smtp_port' => 587,
+        'smtp_username' => 'ngetmeas285@gmail.com',
+        'smtp_password' => 'xxfs mfby makf aipi',
+    ],
+];
 
+// Change this to 'backup' to send all OTP emails with the backup account.
+const OTP_DEFAULT_ACCOUNT = 'default';
 
-
-function send_otp_email(string $recipient, string $name, string $otpCode): bool
+function send_otp_email(string $recipient, string $name, string $otpCode, string $accountKey = OTP_DEFAULT_ACCOUNT): bool
 {
+    $account = OTP_ACCOUNTS[$accountKey] ?? null;
+    if ($account === null) {
+        return false;
+    }
+
     $subject = 'Your Employee Management System login code';
     $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     $message = '<p>Hello ' . $safeName . ',</p>'
@@ -23,25 +37,25 @@ function send_otp_email(string $recipient, string $name, string $otpCode): bool
         . '<p>This code expires in 10 minutes. Do not share it with anyone.</p>';
 
     $autoload = __DIR__ . '/../vendor/autoload.php';
-    if (OTP_SMTP_HOST !== '' && !is_file($autoload)) {
+    if ($account['smtp_host'] !== '' && !is_file($autoload)) {
         return false;
     }
 
-    if (OTP_SMTP_HOST !== '' && is_file($autoload)) {
+    if ($account['smtp_host'] !== '' && is_file($autoload)) {
         require_once $autoload;
 
         if (class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
             try {
                 $mail = new PHPMailer\PHPMailer\PHPMailer(true);
                 $mail->isSMTP();
-                $mail->Host = OTP_SMTP_HOST;
-                $mail->Port = OTP_SMTP_PORT;
-                $mail->SMTPAuth = OTP_SMTP_USERNAME !== '';
-                $mail->Username = OTP_SMTP_USERNAME;
-                $mail->Password = OTP_SMTP_PASSWORD;
+                $mail->Host = $account['smtp_host'];
+                $mail->Port = $account['smtp_port'];
+                $mail->SMTPAuth = $account['smtp_username'] !== '';
+                $mail->Username = $account['smtp_username'];
+                $mail->Password = $account['smtp_password'];
                 $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->CharSet = 'UTF-8';
-                $mail->setFrom(OTP_MAIL_FROM, OTP_MAIL_FROM_NAME);
+                $mail->setFrom($account['from'], $account['from_name']);
                 $mail->addAddress($recipient, $name);
                 $mail->isHTML(true);
                 $mail->Subject = $subject;
@@ -57,7 +71,7 @@ function send_otp_email(string $recipient, string $name, string $otpCode): bool
     $headers = [
         'MIME-Version: 1.0',
         'Content-type: text/html; charset=UTF-8',
-        'From: ' . OTP_MAIL_FROM_NAME . ' <' . OTP_MAIL_FROM . '>',
+        'From: ' . $account['from_name'] . ' <' . $account['from'] . '>',
     ];
 
     return mail($recipient, $subject, $message, implode("\r\n", $headers));
