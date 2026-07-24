@@ -217,6 +217,10 @@ if ($id > 0) {
                                             <div class="info-value"><?= htmlspecialchars($employee['department_name'] ?? 'No Department') ?></div>
                                         </div>
                                         <div class="info-card">
+                                            <div class="info-label">Salary</div>
+                                            <div class="info-value"><?= isset($employee['salary']) ? '$' . number_format((float) $employee['salary'], 2) : '<span class="text-muted">Not provided</span>' ?></div>
+                                        </div>
+                                        <div class="info-card">
                                             <div class="info-label">Hire Date</div>
                                             <div class="info-value">
                                                 <?php if (!empty($employee['hire_date'])): ?>
@@ -240,6 +244,18 @@ if ($id > 0) {
                                                 <span class="status-badge status-<?= strtolower(str_replace(' ', '-', $employee['status'])) ?>">
                                                     <?= htmlspecialchars($employee['status']) ?>
                                                 </span>
+                                            </div>
+                                        </div>
+                                        <div class="info-card">
+                                            <div class="info-label">Created At</div>
+                                            <div class="info-value">
+                                                <?= !empty($employee['created_at']) ? date('Y-m-d H:i:s', strtotime($employee['created_at'])) : '<span class="text-muted">Not available</span>' ?>
+                                            </div>
+                                        </div>
+                                        <div class="info-card">
+                                            <div class="info-label">Updated At</div>
+                                            <div class="info-value">
+                                                <?= !empty($employee['updated_at']) ? date('Y-m-d H:i:s', strtotime($employee['updated_at'])) : '<span class="text-muted">Not available</span>' ?>
                                             </div>
                                         </div>
                                     </div>

@@ -84,8 +84,8 @@ $employees = $employeesStmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                     <span class="text-muted small">TOTAL EMPLOYEES</span>
                                     <div class="display-6 fw-bold mt-1"><?= (int) $department['employees'] ?></div>
                                     <hr>
-                                    <span class="text-muted small">CREATED</span>
-                                    <div class="fw-semibold mt-1"><?= !empty($department['created_at']) ? date('F d, Y', strtotime($department['created_at'])) : 'Not available' ?></div>
+                                    <span class="text-muted small">CREATED AT</span>
+                                    <div class="fw-semibold mt-1"><?= !empty($department['created_at']) ? date('Y-m-d H:i:s', strtotime($department['created_at'])) : 'Not available' ?></div>
                                 </div>
                             </div>
                         </div>

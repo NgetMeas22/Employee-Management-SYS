@@ -4,7 +4,7 @@ require_login();
 
 // Fetch real employees from DB
 $employees = [];
-$sql = "SELECT e.employee_id, e.first_name, e.last_name, e.position, COALESCE(d.department_name, '') AS department, e.status, e.email, e.photo
+$sql = "SELECT e.employee_id, e.first_name, e.last_name, e.position, COALESCE(d.department_name, '') AS department, e.status, e.email, e.photo, e.salary, e.created_at, e.updated_at
         FROM employees e
         LEFT JOIN departments d ON e.department_id = d.department_id
         ORDER BY e.employee_id DESC";
@@ -55,6 +55,9 @@ if ($res) {
                                             <th>Employee</th>
                                             <th>Position</th>
                                             <th>Department</th>
+                                            <th>Salary</th>
+                                            <th>Created</th>
+                                            <th>Updated</th>
                                             <th>Status</th>
                                             <th>Profile</th>
                                             <th class="text-end">Action</th>
@@ -69,6 +72,9 @@ if ($res) {
                                                 </td>
                                                 <td><?= htmlspecialchars($employee['position'] ?? '') ?></td>
                                                 <td><?= htmlspecialchars($employee['department'] ?? '') ?></td>
+                                                <td><?= isset($employee['salary']) ? '$' . number_format((float) $employee['salary'], 2) : '' ?></td>
+                                                <td><?= !empty($employee['created_at']) ? date('Y-m-d H:i:s', strtotime($employee['created_at'])) : '' ?></td>
+                                                <td><?= !empty($employee['updated_at']) ? date('Y-m-d H:i:s', strtotime($employee['updated_at'])) : '' ?></td>
                                                 <td>
                                                     <span class="badge <?= ($employee['status'] ?? '') === 'Active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' ?>">
                                                         <?= htmlspecialchars($employee['status'] ?? '') ?>
