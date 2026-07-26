@@ -73,8 +73,8 @@ if ($res) {
                                                 <td><?= htmlspecialchars($employee['position'] ?? '') ?></td>
                                                 <td><?= htmlspecialchars($employee['department'] ?? '') ?></td>
                                                 <td><?= isset($employee['salary']) ? '$' . number_format((float) $employee['salary'], 2) : '' ?></td>
-                                                <td><?= !empty($employee['created_at']) ? date('Y-m-d H:i:s', strtotime($employee['created_at'])) : '' ?></td>
-                                                <td><?= !empty($employee['updated_at']) ? date('Y-m-d H:i:s', strtotime($employee['updated_at'])) : '' ?></td>
+                                                <td class="text-muted small"><?= !empty($employee['created_at']) ? date('Y-m-d H:i:s', strtotime($employee['created_at'])) : '' ?></td>
+                                                <td class="text-muted small"><?= !empty($employee['updated_at']) ? date('Y-m-d H:i:s', strtotime($employee['updated_at'])) : '' ?></td>
                                                 <td>
                                                     <span class="badge <?= ($employee['status'] ?? '') === 'Active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' ?>">
                                                         <?= htmlspecialchars($employee['status'] ?? '') ?>
